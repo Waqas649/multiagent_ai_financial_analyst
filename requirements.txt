@@ -1,0 +1,30 @@
+# LangGraph & LangChain
+langgraph
+langchain
+langchain-google-genai
+langchain-ollama
+langchain-community
+
+# LLM APIs
+anthropic
+google-generativeai
+
+# Data fetching
+yfinance
+fredapi
+tavily-python
+
+# Database
+psycopg2-binary
+
+# API
+fastapi
+uvicorn[standard]
+
+# Data models & validation
+pydantic
+pydantic-settings
+
+# Utilities
+python-dotenv
+pandas
