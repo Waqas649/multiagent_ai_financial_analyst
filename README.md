@@ -11,21 +11,23 @@ A collaborative **Agent-to-Agent (A2A)** system built using **LangChain** and **
 
 ```
 Brokerage_App/
+├── src/                     # backend package
+│   ├── __init__.py
+│   ├── agents.py            # agent definitions (supervisor, writer, critiquer, etc.)
+│   ├── api.py               # FastAPI server with SSE streaming
+│   ├── data_collector.py    # yfinance + FRED data fetching
+│   ├── graph.py             # LangGraph workflow
+│   └── prompts.py           # all LLM prompt templates
+├── frontend/
+│   └── app.py               # Streamlit UI
+├── tests/
+│   └── test_tools.py
 ├── assets/
-│   └── research_graph.png
-├── agents.py
-├── api.py
-├── app.py
-├── data_collector.py
+├── demo.py                  # run the pipeline directly (no API/UI)
+├── visualize_graph.py       # export graph diagram to assets/
 ├── docker-compose.yml
-├── graph.py
-├── main.py
-├── prompts.py
 ├── pyproject.toml
 ├── requirements.txt
-├── tests/
-├── uv.lock
-├── visualize_graph.py
 └── README.md
 ```
 
@@ -100,13 +102,25 @@ docker-compose up -d
 
 ## Usage
 
-### Run the Streamlit App
+### Start the API server
 
 ```bash
-streamlit run app.py
+uvicorn src.api:api --port 8000
+```
+
+### Run the Streamlit frontend
+
+```bash
+streamlit run frontend/app.py
 ```
 
 Opens at `http://localhost:8501`
+
+### Run the pipeline directly (no server/UI)
+
+```bash
+python demo.py Q1 2025
+```
 
 ---
 
