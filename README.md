@@ -18,8 +18,7 @@ Brokerage_App/
 │   ├── data_collector.py    # yfinance + FRED data fetching
 │   ├── graph.py             # LangGraph workflow
 │   └── prompts.py           # all LLM prompt templates
-├── frontend/
-│   └── app.py               # Streamlit UI
+├── demo.py                  # Streamlit UI
 ├── tests/
 │   └── test_tools.py
 ├── assets/
