@@ -235,7 +235,7 @@ if st.button("🚀 Generate Report", type="primary", use_container_width=True):
 
     except requests.exceptions.ConnectionError:
         st.error(f"Cannot reach API at `{API_URL}`. Is the server running?\n\n"
-                 "`conda run -n broker uvicorn api:api --port 8000`")
+                 "`uvicorn src.api:api --port 8000`")
         st.stop()
     except requests.exceptions.HTTPError as e:
         st.error(f"❌ API returned {e.response.status_code}")

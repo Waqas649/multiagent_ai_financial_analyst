@@ -2,7 +2,7 @@
 
 from typing import TypedDict
 from langgraph.graph import StateGraph, END
-from agents import (
+from .agents import (
     create_supervisor_chain,
     create_data_collector_agent,
     create_news_researcher_agent,

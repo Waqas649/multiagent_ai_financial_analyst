@@ -1,7 +1,7 @@
 # visualize_graph.py
 
 import os
-from graph import app
+from src.graph import app
 
 def save_graph_image():
     """

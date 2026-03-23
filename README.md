@@ -36,14 +36,14 @@ Brokerage_App/
 ### Prerequisites
 
 - Python 3.9+
-- pip or [uv](https://github.com/astral-sh/uv) package manager
+- pip 
 - Docker (optional, for PostgreSQL via docker-compose)
 
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/Waqas495/Brokerage_App.git
-cd Brokerage_App
+git clone https://github.com/Waqas495/financial_analyst.git
+cd financial_analyst
 ```
 
 ### 2. Install dependencies
@@ -107,14 +107,6 @@ streamlit run app.py
 ```
 
 Opens at `http://localhost:8501`
-
-### Visualize the Agent Graph (optional)
-
-```bash
-python visualize_graph.py
-```
-
-Saves diagram to `assets/research_graph.png`.
 
 ---
 

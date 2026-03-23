@@ -5,8 +5,8 @@ import json
 from dotenv import load_dotenv
 from langchain_nvidia_ai_endpoints import ChatNVIDIA
 from langchain_tavily import TavilySearch
-from data_collector import get_all_market_data, format_for_prompt
-from prompts import (
+from .data_collector import get_all_market_data, format_for_prompt
+from .prompts import (
     news_researcher_prompt_template,
     writer_prompt_template,
     critique_prompt_template,
@@ -297,4 +297,3 @@ def create_critique_chain():
         return {"critique": feedback.strip()}
 
     return critique_invoke
-

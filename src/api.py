@@ -18,7 +18,7 @@ load_dotenv()
 
 import psycopg
 from langgraph.checkpoint.postgres import PostgresSaver
-from graph import build_graph
+from .graph import build_graph
 
 _DB_URI = os.getenv(
     "DATABASE_URL",

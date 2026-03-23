@@ -1,41 +1,72 @@
-import types
 import pytest
-
-import agents
-
-# Test that _call_llm handles different LLM APIs
-
-def test_call_llm_invoke():
-    class Dummy:
-        def invoke(self, arg):
-            return "invoked" + str(arg)
-
-    d = Dummy()
-    assert agents._call_llm(d, "x") == "invokedx"
+import src.agents as agents
 
 
-def test_call_llm_run():
-    class Dummy:
-        def run(self, arg):
-            return "run" + str(arg)
+# ---------------------------------------------------------------------------
+# _llm_call — uses module-level llm; monkeypatch it
+# ---------------------------------------------------------------------------
 
-    d = Dummy()
-    assert agents._call_llm(d, "x") == "runx"
+def test_llm_call_returns_content(monkeypatch):
+    class FakeLLM:
+        def invoke(self, prompt):
+            class Resp:
+                content = "hello"
+            return Resp()
+
+    monkeypatch.setattr(agents, "llm", FakeLLM())
+    assert agents._llm_call("test prompt") == "hello"
 
 
-def test_call_llm_callable():
-    def func(x):
-        return "call" + str(x)
+def test_llm_call_falls_back_to_str(monkeypatch):
+    class FakeLLM:
+        def invoke(self, prompt):
+            return 42  # no .content attribute
 
-    assert agents._call_llm(func, "x") == "callx"
+    monkeypatch.setattr(agents, "llm", FakeLLM())
+    assert agents._llm_call("test prompt") == "42"
 
 
-def test_researcher_with_callable_tavily_tool(monkeypatch):
-    # Replace tavily_tool with a simple callable
-    def fake_tavily_call(kwargs):
-        return {"results": [{"title": "Test", "url": "http://example.com", "content": "Example"}]}
+# ---------------------------------------------------------------------------
+# _tavily_search — monkeypatch tavily_tool
+# ---------------------------------------------------------------------------
 
-    monkeypatch.setattr(agents, "tavily_tool", fake_tavily_call)
-    researcher = agents.create_researcher_agent()
-    out = researcher({"input": "test query"})
-    assert "output" in out and isinstance(out["output"], str)
+def test_tavily_search_invoke(monkeypatch):
+    class FakeTavily:
+        def invoke(self, kwargs):
+            return {"results": [{"title": "T", "url": "http://x.com", "content": "c"}]}
+
+    monkeypatch.setattr(agents, "tavily_tool", FakeTavily())
+    results = agents._tavily_search("test query")
+    assert results == [{"title": "T", "url": "http://x.com", "content": "c"}]
+
+
+def test_tavily_search_callable(monkeypatch):
+    def fake_tavily(kwargs):
+        return {"results": [{"title": "T", "url": "http://x.com", "content": "c"}]}
+
+    monkeypatch.setattr(agents, "tavily_tool", fake_tavily)
+    results = agents._tavily_search("test query")
+    assert results == [{"title": "T", "url": "http://x.com", "content": "c"}]
+
+
+# ---------------------------------------------------------------------------
+# create_news_researcher_agent
+# ---------------------------------------------------------------------------
+
+def test_news_researcher_returns_news_context(monkeypatch):
+    monkeypatch.setattr(agents, "tavily_tool", lambda kwargs: {
+        "results": [{"title": "Test", "url": "http://example.com", "content": "Example content"}]
+    })
+
+    class FakeLLM:
+        def invoke(self, prompt):
+            class Resp:
+                content = "summarised news"
+            return Resp()
+
+    monkeypatch.setattr(agents, "llm", FakeLLM())
+
+    researcher = agents.create_news_researcher_agent()
+    out = researcher({"intent": "report", "quarter": "Q1", "year": 2025, "search_query": ""})
+    assert "news_context" in out
+    assert isinstance(out["news_context"], str)
